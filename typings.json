@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "requirejs": "registry:npm/requirejs#2.2.0+20160319062357"
+  },
+  "globalDependencies": {
+    "canvasjs": "registry:dt/canvasjs#0.0.0+20160317120654"
+  }
+}
