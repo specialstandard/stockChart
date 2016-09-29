@@ -28,14 +28,23 @@ export class ChartComponent implements OnInit{
   index:number;
   accountValue: number;
   profit: number;
+  activePosition: boolean;
+  activeLong: boolean;
+  activeShort: boolean;
+	entryPrice: number;
+	equityValue: number;
+	numShares: number;
 
   ngOnInit(){
     this.sp500 = SP500.getSP500();
     //console.log('sp500: ', this.sp500)
     console.log('started chart component');
     this.initChart();
-    this.accountValue = this.portfolioService.getAccountValue()
-
+    this.accountValue = 10000;
+		this.numShares = 0;    
+    this.activePosition = false;
+    this.activeLong = false;
+    this.activeShort = false;
   }
 
   public initChart(){
@@ -82,19 +91,38 @@ export class ChartComponent implements OnInit{
   public buy(){
     this.advanceChart()
     let openPrice = this.dataPoints[this.dataPoints.length-1].y[0]
-    this.portfolioService.buy(openPrice)
-    this.accountValue = Math.round(this.portfolioService.getAccountValue())
-    this.profit = this.portfolioService.getProfit()
+    this.entryPrice = openPrice;
+    this.equityValue = this.accountValue;
+    this.numShares = this.accountValue / openPrice;
+    this.activePosition = true;
+    this.activeLong = true;
   }
 
   public sell(){
     this.advanceChart()
     let openPrice = this.dataPoints[this.dataPoints.length-1].y[0]
-    this.portfolioService.sell(openPrice)  
-    this.accountValue = Math.round(this.portfolioService.getAccountValue())
-    this.profit = 0;
+    this.equityValue = this.numShares * openPrice;
+    this.accountValue = Math.round(this.equityValue);
+    this.equityValue = 0;
+    this.numShares = 0;    
+    this.activePosition = false;
+    this.activeLong = false;
   } 
 
+  public buyToCover(){
+
+  }
+
+  public sellToClose(){
+
+  }
+
+	update( price: number ){
+		this.equityValue = this.numShares * price;
+		if( this.numShares > 0 ){
+			this.accountValue = this.equityValue;
+		}
+	}
   processData(result){
       this.stock = result
       //console.log(`stock result: ${this.stock}`);
@@ -138,7 +166,6 @@ export class ChartComponent implements OnInit{
                 }
             )   
       this.portfolioService.update(this.dataPoints[this.dataPoints.length-1].y[0]);
-      this.accountValue = Math.round(this.portfolioService.getAccountValue())
       this.showChart()
       this.index++
     } 

@@ -6,8 +6,10 @@
   <div id="chartContainer" style="width:800px; height:475px"></div>
   <button (click)="initChart()">Next Chart</button>
   <button (click)="advanceChart()">Advance</button>
-  <button (click)="buy()">Buy</button>
-  <button (click)="sell()">Sell</button>
+  <button *ngIf="!activePosition" (click)="buy()">Buy</button>
+  <button *ngIf="!activePosition" (click)="sell()">Short</button>
+  <button *ngIf="activeShort" (click)="buy()">Buy to Cover</button>
+  <button *ngIf="activeLong" (click)="sell()">Sell to Close</button>
 </div>
 <!--<sd-portfolio [accountValue]="accountValue"></sd-portfolio>-->
 <div class = "portfolio">
