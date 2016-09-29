@@ -44,7 +44,6 @@ export class ChartComponent implements OnInit{
     this.accountValue = 10000;
 		this.numShares = 0;    
     this.entryPrice = 0;
-    this.entryPrice = 0;
     this.equityValue = 0;
     this.activePosition = false;
     this.activeLong = false;
@@ -54,6 +53,8 @@ export class ChartComponent implements OnInit{
 
   public initChart(){
     this.entryPrice = 0;
+    this.currentPrice = 0;
+    this.profit = null;
 
     this.index = 120;
     if(this.chart){
@@ -116,7 +117,7 @@ export class ChartComponent implements OnInit{
 
   public buyToCover(){
     this.advanceChart()
-    
+
     this.equityValue = 0;
     this.numShares = 0;  
     this.activePosition = false;

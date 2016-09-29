@@ -19,11 +19,11 @@
     Worth: ${{ accountValue }}
   </p>
   <p>
-    Profit: <span *ngIf="activePosition">{{ profit }}%</span>
+    Profit: <span *ngIf="profit != null">{{ profit }}%</span>
   </p>
   <p >
-    Entry Price: <span *ngIf="activePosition">{{ entryPrice }}</span><br>
-    Current Price: <span *ngIf="activePosition">{{ currentPrice }}</span>
+    Entry Price: <span *ngIf="entryPrice != 0">{{ entryPrice }}</span><br>
+    Current Price: <span *ngIf="currentPrice !=0">{{ currentPrice }}</span>
   </p>
   </div>
 </div>
