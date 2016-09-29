@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { YahooStockService } from '../shared/yahoo-stock/yahoo-stock.service';
 import { CSVService} from '../shared/csv-service/csv.service'
-import {SP500} from '../shared/sp500'
+import { SP500 } from '../shared/sp500'
 
 /**
  * This class represents the lazy loaded ChartComponent.
@@ -20,42 +20,66 @@ export class ChartComponent implements OnInit{
   stock: any;
   stockArr: string[];
   dataPoints: any[] = [];
+  equity: any;
+  chart:any = null;
+  index:number;
 
   ngOnInit(){
+    this.index = 60;
     this.sp500 = SP500.getSP500();
-    console.log('sp500: ', this.sp500)
+    //console.log('sp500: ', this.sp500)
     console.log('started chart component');
     this.initChart();
   }
 
   public initChart(){
+    if(this.chart){
+      this.chart = null;
+    }
     this.dataPoints = [];
-
     this.symbol = this.getRandomSymbol()
-    this.yahooStockService.get( this.symbol )
+    this.equity = {
+      symbol: this.symbol,
+      date:{
+        start:{
+          month: 9,
+          day: 28,
+          year: 2015
+        },
+        end:{
+          month: 8,
+          day: 27,
+          year: 2015
+        }
+      }
+    }
+    this.getEquity(this.equity)
+  }  
+
+  getEquity(){
+    this.yahooStockService.get( this.equity )
                       .subscribe(result => this.processData(result))
   }
-
   getRandomSymbol(): string{
     let symbol = this.sp500[ Math.floor(Math.random() * this.sp500.length) ]
     return symbol
   }
   processData(result){
       this.stock = result
-      console.log(`stock result: ${this.stock}`);
+      //console.log(`stock result: ${this.stock}`);
       this.stockArr = this.csvService.CSVToArray(this.stock)
       this.stockArr = this.stockArr.reverse();
       this.stockArr.shift();
-      console.log('stockArray: ',this.stockArr);
-      for(var i = 0; i< this.stockArr.length; i++){
+      //console.log('stockArray: ',this.stockArr);
+      for(var i = 0; i< this.index; i++){
           this.dataPoints.push(
               {
                   x: new Date(this.stockArr[i][0]),
                   y:[
-                      +this.stockArr[i][1],
-                      +this.stockArr[i][2],
-                      +this.stockArr[i][3],
-                      +this.stockArr[i][4]
+                      this.round(+this.stockArr[i][1]),
+                      this.round(+this.stockArr[i][2]),
+                      this.round(+this.stockArr[i][3]),
+                      this.round(+this.stockArr[i][4])
                   ]
               }
           )           
@@ -64,9 +88,32 @@ export class ChartComponent implements OnInit{
       this.showChart();
   }
 
+  round(num:number){
+    return Math.round(num*100)/100;
+  }
+
+  advanceChart(){
+    if(this.stockArr[this.index]){
+      this.dataPoints.shift()
+      this.dataPoints.push(
+                {
+                    x: new Date(this.stockArr[this.index][0]),
+                    y:[
+                        this.round(+this.stockArr[this.index][1]),
+                        this.round(+this.stockArr[this.index][2]),
+                        this.round(+this.stockArr[this.index][3]),
+                        this.round(+this.stockArr[this.index][4])
+                    ]
+                }
+            )   
+      this.showChart()
+      this.index++
+    }
+  }
+
   showChart(){
 
-    var chart = new CanvasJS.Chart("chartContainer",
+    this.chart = new CanvasJS.Chart("chartContainer",
       {
         title:{
           text: "chartContainer",
@@ -97,7 +144,7 @@ export class ChartComponent implements OnInit{
 		]
 	});
   console.log('dataPoints before chart.render: ', this.dataPoints)
-	chart.render();
+	this.chart.render();
 
   }
 }

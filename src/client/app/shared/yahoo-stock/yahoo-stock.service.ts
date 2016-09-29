@@ -10,17 +10,21 @@ export class YahooStockService {
     constructor(private http: Http){
 
     }
-    get(symbol: string): Observable<string> {
-        const url:string = 'http://real-chart.finance.yahoo.com/table.csv?s=' + symbol + '&a=02&b=27&c=2015&d=08&e=27&f=2015&g=d&ignore=.csv';
+    get( equity:any ): Observable<string> {
+        console.log('equity obj: ', equity)
+        const url:string = 'http://real-chart.finance.yahoo.com/table.csv?' +
+                `s=${equity.symbol}` +
+                `&a=${equity.date.start.month}` +
+                `&b=${equity.date.start.day}` +
+                `&c=${equity.date.start.year}` +
+                //`&d=${equity.date.end.month}` +
+                //`&e=${equity.date.end.day}` +
+                //`&f=${equity.date.end.year}` +
+                `&g=d&ignore=.csv`;
 
+        console.log('equity url: ', url)
         return this.http.get(url)
                 .map(r => r.text())                    
     }
 
-    do(){
-       
-    }
-    processData(data: any) {
-        console.log('test');
-    }
 }
