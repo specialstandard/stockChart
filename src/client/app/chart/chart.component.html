@@ -1,7 +1,12 @@
-<p>
-  Chart goes here
+<div>
+  <p>
+    Chart goes here
 
-</p>
-<div id="chartContainer" style="width:800px; height:475px"></div>
-<button (click)="initChart()">Next Chart</button>
-<button (click)="advanceChart()">Advance</button>
+  </p>
+  <div id="chartContainer" style="width:800px; height:475px"></div>
+  <button (click)="initChart()">Next Chart</button>
+  <button (click)="advanceChart()">Advance</button>
+  <button (click)="buy()">Buy</button>
+  <button (click)="sell()">Sell</button>
+</div>
+<sd-portfolio [accountValue]="accountValue"></sd-portfolio>

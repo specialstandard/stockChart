@@ -61,3 +61,13 @@ button {
 button:hover {
   background-color: #28739e;
 }
+
+sd-app {
+  position: relative;
+}
+
+sd-portfolio {
+  position: absolute;
+  top: 30px;
+  left: 900px;
+}

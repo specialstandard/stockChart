@@ -9,6 +9,7 @@ import { routes } from './app.routes';
 import { AboutModule } from './about/about.module';
 import { HomeModule } from './home/home.module';
 import { ChartModule } from './chart/chart.module';
+import { PortfolioModule } from './portfolio/portfolio.module';
 
 import { SharedModule } from './shared/shared.module';
 

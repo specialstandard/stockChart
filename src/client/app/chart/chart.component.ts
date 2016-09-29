@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { YahooStockService } from '../shared/yahoo-stock/yahoo-stock.service';
 import { CSVService} from '../shared/csv-service/csv.service'
 import { SP500 } from '../shared/sp500'
+import { PortfolioService} from '../portfolio/portfolio.service'
 
 /**
  * This class represents the lazy loaded ChartComponent.
@@ -13,7 +14,9 @@ import { SP500 } from '../shared/sp500'
   styleUrls: ['chart.component.css']
 })
 export class ChartComponent implements OnInit{ 
-  constructor(private yahooStockService: YahooStockService, private csvService: CSVService) {}
+  constructor( private yahooStockService: YahooStockService, 
+               private csvService: CSVService,
+               private portfolioService: PortfolioService ) {}
 
   sp500: string[] = []
   symbol: string;
@@ -23,17 +26,20 @@ export class ChartComponent implements OnInit{
   equity: any;
   chart:any = null;
   index:number;
+  accountValue: number;
 
   ngOnInit(){
     this.sp500 = SP500.getSP500();
     //console.log('sp500: ', this.sp500)
     console.log('started chart component');
     this.initChart();
+    this.accountValue = this.portfolioService.getAccountValue()
+
   }
 
   public initChart(){
-    
-    this.index = 60;
+
+    this.index = 120;
     if(this.chart){
       this.chart = null;
     }
@@ -45,7 +51,7 @@ export class ChartComponent implements OnInit{
         start:{
           month: 9,
           day: 28,
-          year: 2015
+          year: this.getRandomYear(2001, 2015)
         },
         end:{
           month: 8,
@@ -53,7 +59,8 @@ export class ChartComponent implements OnInit{
           year: 2015
         }
       }
-    }
+    } 
+    console.log('random year: ', this.equity.date.start.year)
     this.getEquity(this.equity)
   }  
 
@@ -65,6 +72,28 @@ export class ChartComponent implements OnInit{
     let symbol = this.sp500[ Math.floor(Math.random() * this.sp500.length) ]
     return symbol
   }
+
+  //   between (min, max) ... (inclusive,exclusive)
+  getRandomYear(min, max) {
+    return Math.floor( Math.random() * (max - min) + min );
+  }
+
+  public buy(){
+    this.advanceChart()
+    let openPrice = this.dataPoints[this.dataPoints.length-1].y[0]
+    this.portfolioService.buy(openPrice)
+    this.accountvalue = this.portfolioService.getAccountValue()
+
+  }
+
+  public sell(){
+    this.advanceChart()
+    let openPrice = this.dataPoints[this.dataPoints.length-1].y[0]
+    this.portfolioService.sell(openPrice)  
+    this.accountvalue = this.portfolioService.getAccountValue()
+
+  }
+
   processData(result){
       this.stock = result
       //console.log(`stock result: ${this.stock}`);
@@ -95,6 +124,7 @@ export class ChartComponent implements OnInit{
 
   advanceChart(){
     if(this.stockArr[this.index]){
+      this.accountvalue = this.portfolioService.getAccountValue()
       this.dataPoints.shift()
       this.dataPoints.push(
                 {
