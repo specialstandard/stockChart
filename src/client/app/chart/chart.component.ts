@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { YahooStockService } from '../shared/yahoo-stock/yahoo-stock.service';
 import { CSVService} from '../shared/csv-service/csv.service'
-
+import {SP500} from '../shared/sp500'
 
 /**
  * This class represents the lazy loaded ChartComponent.
@@ -13,21 +13,33 @@ import { CSVService} from '../shared/csv-service/csv.service'
   styleUrls: ['chart.component.css']
 })
 export class ChartComponent implements OnInit{ 
-  constructor(private yahooStockService: YahooStockService, private csvService: CSVService){
+  constructor(private yahooStockService: YahooStockService, private csvService: CSVService) {}
 
-  }
-
-  symbol: string = 'nflx';
+  sp500: string[] = []
+  symbol: string;
   stock: any;
   stockArr: string[];
   dataPoints: any[] = [];
 
   ngOnInit(){
+    this.sp500 = SP500.getSP500();
+    console.log('sp500: ', this.sp500)
     console.log('started chart component');
+    this.initChart();
+  }
+
+  public initChart(){
+    this.dataPoints = [];
+
+    this.symbol = this.getRandomSymbol()
     this.yahooStockService.get( this.symbol )
                       .subscribe(result => this.processData(result))
   }
 
+  getRandomSymbol(): string{
+    let symbol = this.sp500[ Math.floor(Math.random() * this.sp500.length) ]
+    return symbol
+  }
   processData(result){
       this.stock = result
       console.log(`stock result: ${this.stock}`);
