@@ -116,24 +116,21 @@ export class ChartComponent implements OnInit{
 
   public buyToCover(){
     this.advanceChart()
-    let openPrice = this.dataPoints[this.dataPoints.length-1].y[0]
-    this.equityValue = (this.entryPrice - openPrice) * this.numShares
-    this.accountValue = this.accountValue + Math.round(this.equityValue);
-
+    
+    this.equityValue = 0;
+    this.numShares = 0;  
     this.activePosition = false;
     this.activeShort = false;
   }
 
   public sellToClose(){
     this.advanceChart()
-    let openPrice = this.dataPoints[this.dataPoints.length-1].y[0]
-    this.equityValue = this.numShares * openPrice;
-    this.accountValue = Math.round(this.equityValue);
+
     this.equityValue = 0;
     this.numShares = 0;    
     this.activePosition = false;
     this.activeLong = false;
-  }
+  } 
 
 	update( price: number ){
     this.currentPrice = price;
@@ -143,12 +140,16 @@ export class ChartComponent implements OnInit{
 		  this.equityValue = this.numShares * price;
       this.accountValue = Math.round(this.equityValue);
     } else if(this.activeShort){
-      this.profit = this.round(((this.currentPrice + this.entryPrice)/ this.entryPrice) * 100);
-
-		  this.equityValue = (this.entryPrice - price) * this.numShares
-      this.accountValue = this.accountValue + Math.round(this.equityValue);
+      this.updateShort(price, this.dataPoints[this.dataPoints.length-2].y[0])
     }
 	}  
+
+  updateShort(price: number, lastPrice: number){
+      this.profit = this.round(-((this.currentPrice - this.entryPrice)/ this.entryPrice) * 100);
+
+		  this.equityValue = (this.numShares * (lastPrice - price))
+      this.accountValue = Math.round(this.accountValue + this.equityValue); 
+  }
   processData(result){
       this.stock = result
       //console.log(`stock result: ${this.stock}`);
