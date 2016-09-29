@@ -7,9 +7,9 @@
   <button (click)="initChart()">Next Chart</button>
   <button (click)="advanceChart()">Advance</button>
   <button *ngIf="!activePosition" (click)="buy()">Buy</button>
-  <button *ngIf="!activePosition" (click)="sell()">Short</button>
-  <button *ngIf="activeShort" (click)="buy()">Buy to Cover</button>
-  <button *ngIf="activeLong" (click)="sell()">Sell to Close</button>
+  <button *ngIf="!activePosition" (click)="short()">Short</button>
+  <button *ngIf="activeShort" (click)="buyToCover()">Buy to Cover</button>
+  <button *ngIf="activeLong" (click)="sellToClose()">Sell to Close</button>
 </div>
 <!--<sd-portfolio [accountValue]="accountValue"></sd-portfolio>-->
 <div class = "portfolio">
@@ -19,6 +19,11 @@
     Worth: ${{ accountValue }}
   </p>
   <p>
-    Profit: {{ profit }}
+    Profit: <span *ngIf="activePosition">{{ profit }}%</span>
+  </p>
+  <p >
+    Entry Price: <span *ngIf="activePosition">{{ entryPrice }}</span><br>
+    Current Price: <span *ngIf="activePosition">{{ currentPrice }}</span>
+  </p>
   </div>
 </div>
