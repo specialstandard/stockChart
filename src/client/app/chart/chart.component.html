@@ -9,4 +9,14 @@
   <button (click)="buy()">Buy</button>
   <button (click)="sell()">Sell</button>
 </div>
-<sd-portfolio [accountValue]="accountValue"></sd-portfolio>
+<!--<sd-portfolio [accountValue]="accountValue"></sd-portfolio>-->
+<div class = "portfolio">
+  <div>
+  <h1>Portfolio</h1>
+  <p>
+    Worth: ${{ accountValue }}
+  </p>
+  <p>
+    Profit: {{ profit }}
+  </div>
+</div>

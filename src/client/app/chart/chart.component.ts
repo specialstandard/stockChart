@@ -27,6 +27,7 @@ export class ChartComponent implements OnInit{
   chart:any = null;
   index:number;
   accountValue: number;
+  profit: number;
 
   ngOnInit(){
     this.sp500 = SP500.getSP500();
@@ -71,7 +72,7 @@ export class ChartComponent implements OnInit{
   getRandomSymbol(): string{
     let symbol = this.sp500[ Math.floor(Math.random() * this.sp500.length) ]
     return symbol
-  }
+  } 
 
   //   between (min, max) ... (inclusive,exclusive)
   getRandomYear(min, max) {
@@ -82,17 +83,17 @@ export class ChartComponent implements OnInit{
     this.advanceChart()
     let openPrice = this.dataPoints[this.dataPoints.length-1].y[0]
     this.portfolioService.buy(openPrice)
-    this.accountvalue = this.portfolioService.getAccountValue()
-
+    this.accountValue = Math.round(this.portfolioService.getAccountValue())
+    this.profit = this.portfolioService.getProfit()
   }
 
   public sell(){
     this.advanceChart()
     let openPrice = this.dataPoints[this.dataPoints.length-1].y[0]
     this.portfolioService.sell(openPrice)  
-    this.accountvalue = this.portfolioService.getAccountValue()
-
-  }
+    this.accountValue = Math.round(this.portfolioService.getAccountValue())
+    this.profit = 0;
+  } 
 
   processData(result){
       this.stock = result
@@ -124,7 +125,6 @@ export class ChartComponent implements OnInit{
 
   advanceChart(){
     if(this.stockArr[this.index]){
-      this.accountvalue = this.portfolioService.getAccountValue()
       this.dataPoints.shift()
       this.dataPoints.push(
                 {
@@ -137,9 +137,11 @@ export class ChartComponent implements OnInit{
                     ]
                 }
             )   
+      this.portfolioService.update(this.dataPoints[this.dataPoints.length-1].y[0]);
+      this.accountValue = Math.round(this.portfolioService.getAccountValue())
       this.showChart()
       this.index++
-    }
+    } 
   }
 
   showChart(){
