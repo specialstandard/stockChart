@@ -25,7 +25,6 @@ export class ChartComponent implements OnInit{
   index:number;
 
   ngOnInit(){
-    this.index = 60;
     this.sp500 = SP500.getSP500();
     //console.log('sp500: ', this.sp500)
     console.log('started chart component');
@@ -33,6 +32,8 @@ export class ChartComponent implements OnInit{
   }
 
   public initChart(){
+    
+    this.index = 60;
     if(this.chart){
       this.chart = null;
     }
